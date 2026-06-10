@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/JeevanC31/Fitness_Tracker.git'
-    targetRevision: feature # Update to 'master' when merged
+    targetRevision: master
     path: Fitness_Chart
     helm:
       valueFiles:
