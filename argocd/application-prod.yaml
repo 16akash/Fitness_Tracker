@@ -9,19 +9,19 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/JeevanC31/Fitness_Tracker.git'
-    targetRevision: feature
+    targetRevision: feature # Update to 'master' when merged
     path: Fitness_Chart
     helm:
       valueFiles:
         - values.yaml
-        - values-prod.yaml # Deploying with production overrides
+        - values-prod.yaml
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: fitness-tracker
+    namespace: fitness-tracker-production
   syncPolicy:
     automated:
-      prune: true       # Prunes resources no longer defined in Git
-      selfHeal: true    # Automatically corrects drift on the cluster
+      prune: true
+      selfHeal: true
     syncOptions:
-      - CreateNamespace=true # Ensures the namespace is created if absent
+      - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
