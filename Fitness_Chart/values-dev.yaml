@@ -17,3 +17,7 @@ app:
 
 gateway:
   enabled: false # No gateway needed in local development namespace
+
+mongodb:
+  pvHostPath: "/mnt/data/mongodb-dev"
+

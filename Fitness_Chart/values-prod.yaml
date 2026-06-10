@@ -18,3 +18,7 @@ app:
 gateway:
   enabled: true
   className: kgateway-class
+
+mongodb:
+  pvHostPath: "/mnt/data/mongodb-prod"
+
