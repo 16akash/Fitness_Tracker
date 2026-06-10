@@ -1,0 +1,107 @@
+{
+  "title": "Fitness Tracker Operations Dashboard",
+  "description": "Observability dashboard tracking system health, Kubernetes resources, Node.js app stats, and database latency.",
+  "widgets": [
+    {
+      "definition": {
+        "title": "Application Pod Count (Replicas)",
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:kubernetes_state.deployment.replicas_available{deployment:fitness-tracker-app}",
+            "style": {
+              "palette": "cool",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Container CPU Usage by Pod",
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:kubernetes.cpu.usage.total{app:fitness-tracker-app} by {pod}",
+            "style": {
+              "palette": "warm",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Container Memory RSS by Pod",
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:kubernetes.memory.usage{app:fitness-tracker-app} by {pod}",
+            "style": {
+              "palette": "cool",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "HTTP Request Volume (Rate)",
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:trace.express.request.hits{service:fitness-tracker-app}.as_count()",
+            "style": {
+              "palette": "purple",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "HTTP Status Code Distribution",
+        "type": "query_value",
+        "requests": [
+          {
+            "q": "sum:trace.express.request.errors{service:fitness-tracker-app}.as_count()",
+            "aggregator": "sum"
+          }
+        ],
+        "autoscale": true
+      }
+    },
+    {
+      "definition": {
+        "title": "Database Connection State / Latency",
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:trace.mongodb.query.duration{service:fitness-tracker-app}",
+            "style": {
+              "palette": "cool",
+              "line_type": "dashed",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "env",
+      "default": "production",
+      "prefix": "env"
+    }
+  ],
+  "layout_type": "ordered"
+}

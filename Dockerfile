@@ -1,15 +1,19 @@
-FROM node:18-alpine
-
+# Stage 1: Build and install production dependencies
+FROM node:18-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
 COPY server/package*.json ./server/
-
-RUN npm install --omit=dev && \
-    cd server && npm install --omit=dev
-
+# Install only production dependencies
+RUN npm ci --omit=dev && \
+    cd server && npm ci --omit=dev
+# Stage 2: Minimal runner image
+FROM node:18-alpine
+WORKDIR /app
+# Copy installed node_modules from builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/server/node_modules ./server/node_modules
 COPY . .
-
 EXPOSE 5000
-
+ENV NODE_ENV=production
+ENV PORT=5000
 CMD ["npm", "start"]

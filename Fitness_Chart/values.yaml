@@ -1,0 +1,35 @@
+# Default values for fitness-tracker chart.
+
+global:
+  environment: development
+
+app:
+  replicas: 2
+  image:
+    repository: 409823419470.dkr.ecr.ap-south-2.amazonaws.com/fitness-tracker-app
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 5000
+  service:
+    port: 80
+    type: LoadBalancer
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  jwtSecret: "c3VwZXItc2VjcmV0LWp3dC1rZXk=" # base64 for 'super-secret-jwt-key'
+
+mongodb:
+  image: mongo:7.0-jammy
+  port: 27017
+  storage: 5Gi
+  storageClassName: manual
+  pvHostPath: "/mnt/data/mongodb"
+
+gateway:
+  enabled: true
+  className: kgateway-class
+  port: 80

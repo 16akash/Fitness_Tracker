@@ -1,0 +1,19 @@
+global:
+  environment: development
+
+app:
+  replicas: 1
+  image:
+    tag: latest
+  service:
+    type: ClusterIP # NodePort/ClusterIP is fine for dev
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+gateway:
+  enabled: false # No gateway needed in local development namespace

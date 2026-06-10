@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fitness-tracker.fullname" . }}-configmap
+  labels:
+    {{- include "fitness-tracker.labels" . | nindent 4 }}
+data:
+  MONGODB_URI: "mongodb://{{ include "fitness-tracker.fullname" . }}-mongodb-service:{{ .Values.mongodb.port }}/fitness-tracker"
+  PORT: "{{ .Values.app.port }}"
+  HOST: "0.0.0.0"
+  NODE_ENV: "{{ .Values.global.environment }}"
