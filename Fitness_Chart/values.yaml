@@ -6,7 +6,7 @@ global:
 app:
   replicas: 2
   image:
-    repository: pulkit197/fitness_tracker-fitness-app
+    repository: 409823419470.dkr.ecr.ap-south-2.amazonaws.com/fitness-tracker-app
     tag: latest
     pullPolicy: IfNotPresent
   port: 5000
