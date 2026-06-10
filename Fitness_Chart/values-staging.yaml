@@ -4,7 +4,7 @@ global:
 app:
   replicas: 2
   image:
-    tag: staging
+    tag: latest
   service:
     type: NodePort
   resources:
