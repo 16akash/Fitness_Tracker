@@ -6,8 +6,8 @@ global:
 app:
   replicas: 2
   image:
-    repository: 409823419470.dkr.ecr.ap-south-2.amazonaws.com/fitness-tracker-app
-    tag: latest
+    repository: 16akash/fitness-tracker
+    tag: v1
     pullPolicy: IfNotPresent
   port: 5000
   service:
