@@ -30,6 +30,6 @@ mongodb:
   pvHostPath: "/mnt/data/mongodb"
 
 gateway:
-  enabled: true
+  enabled: false
   className: kgateway-class
   port: 80
