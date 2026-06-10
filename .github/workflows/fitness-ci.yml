@@ -1,0 +1,69 @@
+name: Enterprise CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  sonar-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Root Dependencies
+        run: npm install
+
+      - name: Install Server Dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  docker-build:
+    needs: sonar-analysis
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+          docker build -t 16akash/fitness-tracker:${{ github.run_number }} .
+
+      - name: Push Docker Image
+        run: |
+          docker push 16akash/fitness-tracker:${{ github.run_number }}
+
+          docker tag 16akash/fitness-tracker:${{ github.run_number }} \
+          16akash/fitness-tracker:latest
+
+          docker push 16akash/fitness-tracker:latest
