@@ -1,0 +1,20 @@
+global:
+  environment: production
+
+app:
+  replicas: 3 # Scaled for production load
+  image:
+    tag: master
+  service:
+    type: LoadBalancer
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+gateway:
+  enabled: true
+  className: kgateway-class

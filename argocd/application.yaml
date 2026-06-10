@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fitness-tracker-production
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Msocial123/Fitness_Tracker.git'
+    targetRevision: HEAD
+    path: Fitness_Chart
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-prod.yaml # Deploying with production overrides
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: fitness-tracker
+  syncPolicy:
+    automated:
+      prune: true       # Prunes resources no longer defined in Git
+      selfHeal: true    # Automatically corrects drift on the cluster
+    syncOptions:
+      - CreateNamespace=true # Ensures the namespace is created if absent
+      - ApplyOutOfSyncOnly=true

@@ -1,39 +1,69 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "fitness-tracker.fullname" . }}-mongodb-pv
+  labels:
+    type: local
+spec:
+  storageClassName: {{ .Values.mongodb.storageClassName | quote }}
+  capacity:
+    storage: {{ .Values.mongodb.storage }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.mongodb.pvHostPath | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "fitness-tracker.fullname" . }}-mongodb-pvc
+spec:
+  storageClassName: {{ .Values.mongodb.storageClassName | quote }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.mongodb.storage }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb
+  name: {{ include "fitness-tracker.fullname" . }}-mongodb
+  labels:
+    {{- include "fitness-tracker.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: {{ include "fitness-tracker.fullname" . }}-mongodb
   template:
     metadata:
       labels:
-        app: mongodb
+        app: {{ include "fitness-tracker.fullname" . }}-mongodb
     spec:
       containers:
       - name: mongodb
-        image: mongo:7-jammy
+        image: {{ .Values.mongodb.image | quote }}
         ports:
-        - containerPort: 27017
+        - containerPort: {{ .Values.mongodb.port }}
         volumeMounts:
         - name: mongodb-storage
           mountPath: /data/db
       volumes:
       - name: mongodb-storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: {{ include "fitness-tracker.fullname" . }}-mongodb-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-service
+  name: {{ include "fitness-tracker.fullname" . }}-mongodb-service
+  labels:
+    {{- include "fitness-tracker.labels" . | nindent 4 }}
 spec:
   selector:
-    app: mongodb
+    app: {{ include "fitness-tracker.fullname" . }}-mongodb
   ports:
-  - port: 27017
-    targetPort: 27017
+  - port: {{ .Values.mongodb.port }}
+    targetPort: {{ .Values.mongodb.port }}
   type: ClusterIP
- 
- 
